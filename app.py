@@ -5,7 +5,7 @@ app = FastAPI()
 
 @app.get("/health")
 def health():
-    return {"status": "broken", "service": "task-manager"}
+    return {"status": "healthy", "service": "task-manager"}
 
 
 @app.get("/tasks")
