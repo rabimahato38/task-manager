@@ -29,3 +29,13 @@ jobs:
         run: pytest -v
       - name: Build Docker image
         run: docker build -t task-manager:ci .
+
+      - name: Run Docker container
+        run: docker run -d --name task-manager-ci -p 8000:8000 task-manager:ci
+
+      - name: Test container
+        run: curl --fail http://localhost:8000/health
+
+      - name: Cleanup container
+        if: always()
+        run: docker rm -f task-manager-ci
