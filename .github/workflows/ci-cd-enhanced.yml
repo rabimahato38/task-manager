@@ -166,12 +166,12 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-        if: secrets.AWS_ACCESS_KEY_ID != ''
+        if: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        if: secrets.AWS_ACCESS_KEY_ID != ''
+        if: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}
 
       - name: Build and push to ECR
         env:
@@ -181,8 +181,8 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        if: secrets.AWS_ACCESS_KEY_ID != ''
+        if: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}
 
       - name: AWS deployment skipped
-        if: secrets.AWS_ACCESS_KEY_ID == ''
+        if: ${{ secrets.AWS_ACCESS_KEY_ID == '' }}
         run: echo "⚠️  AWS secrets not configured. Skipping AWS deployment."
