@@ -16,4 +16,4 @@ def test_tasks():
 
     assert response.status_code == 200
     assert "tasks" in response.json()
-    assert response.json()["tasks"][0]["title"] == "Learn Docker & CI/CD"
+    assert response.json()["tasks"][0]["title"] == "Learn Kubernetes"
