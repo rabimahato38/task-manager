@@ -10,4 +10,4 @@ def health():
 
 @app.get("/tasks")
 def get_tasks():
-    return {"tasks": [{"id": 1, "title": "Learn Docker"}]}
+    return {"tasks": [{"id": 1, "title": "Learn Docker & CI/CD"}]}
