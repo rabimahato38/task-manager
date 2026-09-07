@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: task-manager-app
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+    volumes:
+      - .:/app
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - task-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  # Optional: Database service (for future use)
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: task-manager-db
+  #   environment:
+  #     - POSTGRES_USER=taskuser
+  #     - POSTGRES_PASSWORD=taskpass
+  #     - POSTGRES_DB=taskdb
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - task-network
+  #   ports:
+  #     - "5432:5432"
+
+networks:
+  task-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
