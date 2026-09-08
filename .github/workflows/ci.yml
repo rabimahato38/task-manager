@@ -27,8 +27,12 @@ jobs:
 
       - name: Run tests
         run: pytest -v
+
       - name: Build Docker image
         run: docker build -t task-manager:ci .
+
+      - name: Tag Docker image
+        run: docker tag task-manager:ci rabimahato38/task-manager:latest
 
       - name: Run Docker container
         run: docker run -d --name task-manager-ci -p 8000:8000 task-manager:ci
@@ -47,6 +51,16 @@ jobs:
 
           echo "Application failed to become ready"
           exit 1
+
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image
+        run: docker push rabimahato38/task-manager:latest
 
       - name: Cleanup container
         if: always()
