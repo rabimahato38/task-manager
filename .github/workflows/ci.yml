@@ -34,23 +34,33 @@ jobs:
       - name: Tag Docker image
         run: docker tag task-manager:ci rabimahato38/task-manager:latest
 
+
+
+
       - name: Run Docker container
         run: docker run -d --name task-manager-ci -p 8000:8000 task-manager:ci
-
-
 
       - name: Test container
         run: |
           for i in {1..10}; do
             if curl --fail http://localhost:8000/health; then
-              exit 0
+              echo "Health check passed"
+              break
             fi
+
             echo "Application not ready yet. Retrying..."
             sleep 1
           done
 
-          echo "Application failed to become ready"
-          exit 1
+          if ! curl --fail http://localhost:8000/health; then
+            echo "Health check failed"
+            docker ps -a
+            docker logs task-manager-ci
+            exit 1
+          fi
+
+          echo "Testing /tasks endpoint..."
+          curl --fail http://localhost:8000/tasks
 
 
       - name: Login to Docker Hub
